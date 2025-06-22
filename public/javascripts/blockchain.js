@@ -32,14 +32,28 @@ else if (difficultyMinor <= 3) { maximumNonce *= 4;  } // 0011 require 2 more 0 
 else if (difficultyMinor <= 7) { maximumNonce *= 2;  } // 0111 require 1 more 0 bit
 // else don't bother increasing maximumNonce, it already started with 8x padding
 
-
-
 /////////////////////////
 // functions
 /////////////////////////
 function sha256(block, chain) {
   // calculate a SHA256 hash of the contents of the block
   return CryptoJS.SHA256(getText(block, chain));
+}
+
+function setup(block, chain) {
+  updateHash(block, chain);
+  $('#block'+block+'chain'+chain+'number').bind('input propertychange', function() { updateChain(block, chain); });
+  $('#block'+block+'chain'+chain+'nonce').bind('input propertychange', function() { updateChain(block, chain); });
+  $('#block'+block+'chain'+chain+'data').bind('input propertychange', function() { updateChain(block, chain); });
+  $('#block'+block+'chain'+chain+'mineButton').click(function(e) {
+      e.preventDefault();
+      var l = Ladda.create(this);
+      l.start();
+      setTimeout(function() {
+          mine(block, chain, true);
+          l.stop();
+        }, 250); // give UI time to update
+    });
 }
 
 function updateState(block, chain) {
@@ -69,6 +83,24 @@ function updateChain(block, chain) {
 }
 
 function mine(block, chain, isChain) {
+  // Update difficultyMajor with selected difficulty value
+  difficultyMajor = parseInt($('#block'+block+'chain'+chain+'difficulty').val());
+  
+  // Recalculate pattern and maximumNonce based on new difficultyMajor
+  pattern = '';
+  maximumNonce = 8;
+  for (var x=0; x<difficultyMajor; x++) {
+    pattern += '0';
+    maximumNonce *= 16;
+  }
+  pattern += difficultyMinor.toString(16);
+  patternLen = pattern.length;
+  
+  if      (difficultyMinor == 0) { maximumNonce *= 16; }
+  else if (difficultyMinor == 1) { maximumNonce *= 8;  }
+  else if (difficultyMinor <= 3) { maximumNonce *= 4;  }
+  else if (difficultyMinor <= 7) { maximumNonce *= 2;  }
+  
   for (var x = 0; x <= maximumNonce; x++) {
     $('#block'+block+'chain'+chain+'nonce').val(x);
     $('#block'+block+'chain'+chain+'hash').val(sha256(block, chain));

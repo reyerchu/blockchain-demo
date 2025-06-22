@@ -45,6 +45,13 @@
         input.form-control(id='block'+block.block+'chain'+block.chain+'hash', type='text' disabled)
 
     .form-group
+      label.col-sm-2.control-label(for='block'+block.block+'chain'+block.chain+'difficulty') #{__('Difficulty')}:
+      .col-sm-10
+        select.form-control(id='block'+block.block+'chain'+block.chain+'difficulty')
+          - for (var i = 1; i <= 6; i++)
+            option(value=i, selected=(i==4)) #{i}
+
+    .form-group
       .col-sm-2
         i.icon-spinner.icon-spin.icon-large
       .col-sm-10

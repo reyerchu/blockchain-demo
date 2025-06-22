@@ -15,5 +15,7 @@
 	"Tx": "Tx",
 	"$": "$",
 	"From": "From",
-	"Coinbase Transactions": "Coinbase Transactions"
+	"Coinbase Transactions": "Coinbase Transactions",
+	"Difficulty": "Difficulty",
+	"DeFintek.io": "DeFintek.io"
 }

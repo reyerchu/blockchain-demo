@@ -14,14 +14,27 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+// Set the base URL for static files
+app.locals.baseUrl = '/blockchain-demo';
+
+// Serve static files
+app.use('/blockchain-demo', express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Add debug logging for static files
+app.use(function(req, res, next) {
+  console.log('Request URL:', req.url);
+  next();
+});
+
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(i18n.init);
-app.use(express.static(path.join(__dirname, 'public')));
 
+// Routes
 app.use('/', routes);
 
 // catch 404 and forward to error handler
@@ -32,9 +45,6 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
-
-// development error handler
-// will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
@@ -45,8 +55,6 @@ if (app.get('env') === 'development') {
   });
 }
 
-// production error handler
-// no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {

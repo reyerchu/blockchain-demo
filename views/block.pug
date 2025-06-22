@@ -29,6 +29,13 @@ block content
             input#block1chain1hash.form-control(type='text', disabled)
 
         .form-group
+          label.col-sm-2.control-label(for='block1chain1difficulty') #{__('Difficulty')}:
+          .col-sm-10
+            select#block1chain1difficulty.form-control
+              - for (var i = 1; i <= 6; i++)
+                option(value=i, selected=(i==4)) #{i}
+
+        .form-group
           .col-sm-2
             i.icon-spinner.icon-spin.icon-large
           .col-sm-10
